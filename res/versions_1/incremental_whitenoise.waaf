@@ -1,0 +1,7 @@
+/ WAAF
+
+? #RANDOM_FLOAT < #PROGRESS ^ 2 {
+    > DATA, #RANDOM
+}
+
+/ ENDWAAF

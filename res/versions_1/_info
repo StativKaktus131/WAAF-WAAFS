@@ -1,0 +1,26 @@
+this was the second version.
+It introduced the 'waaf' scripting language.
+A Typical WAAF file could look like this:
+
+```
+/ WAAF
+
+? #RANDOM_FLOAT < #PROGRESS ^ 2 {
+    > DATA, #RANDOM
+}
+
+/ ENDWAAF
+
+```
+
+or this
+
+```
+/ WAAF
+
+/ ONCE
+
+. Hello World!
+
+/ ENDWAAF
+```

@@ -1,0 +1,19 @@
+/ WAAF
+
+§ STARTUP {
+
+    ~ 5555
+
+    ? #WAAFS_CONNECTION_SUCCESS == 0 {
+        / CLOSE
+    }
+}
+
+< WAAFS_GYRO_X
+
+? #DATA > 100 * #WAAFS_GYRO_X {
+    > #DATA, 0
+}
+
+
+/ ENDWAAF

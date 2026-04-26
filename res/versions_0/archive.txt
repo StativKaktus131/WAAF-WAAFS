@@ -1,0 +1,39 @@
+
+	srand(time(NULL));
+
+	for (size_t i = 0; i < 20; i++)
+	{
+		float p_start = (rand() / (float) RAND_MAX) * 0.5;
+		float p_length = (rand() / (float) RAND_MAX) * 0.3;
+		float p_shift = (rand() / (float) RAND_MAX) * 0.3 - 0.15;
+		
+		u32 start = (u32) (p_start * data->size);
+		u32 length = (u32) (p_length * data->size);
+		u32 shift = (u32) (p_shift * data->size);
+
+		size_t shift_size = (size_t) shift;
+		u8 buffer[shift_size];
+
+		if (shift > 0)
+		{
+			// load buffer
+			memcpy(buffer, &data->data[start + length], shift_size);
+
+			// shift data
+			memcpy(&data->data[start + shift], &data->data[start], length);
+
+			// refill buffer
+			memcpy(&data->data[start], buffer, shift_size);
+		}
+		else
+		{
+			// load buffer
+			memcpy(buffer, &data->data[start + shift], shift_size);
+
+			// shift data
+			memcpy(&data->data[start + shift], &data->data[start], length);
+
+			// reload buffer
+			memcpy(&data->data[start + length + shift], buffer, shift_size);
+		}
+	}

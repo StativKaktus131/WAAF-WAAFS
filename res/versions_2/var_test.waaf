@@ -1,0 +1,5 @@
+/ WAAF
+
+> DATA, #DATA % (#STEP % 128)
+
+/ ENDWAAF
