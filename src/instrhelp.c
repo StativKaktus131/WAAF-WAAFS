@@ -51,9 +51,6 @@ char** split(char* str, const char* delim, size_t* str_size)
 	return buffer;
 }
 
-// Source - https://stackoverflow.com/a/779960
-// Posted by jmucchiello, modified by community. See post 'Timeline' for change history
-// Retrieved 2026-04-21, License - CC BY-SA 4.0
 
 // You must free the result if result is non-NULL.
 char* replace(char *orig, char *rep, char *with) {
