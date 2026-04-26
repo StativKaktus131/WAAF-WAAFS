@@ -17,6 +17,7 @@ float progress;
 
 
 // running methods
+char* decode_str(char* orig);           // inserts variables in string
 void* decode_eval(char* value);
 bool eval_condition(char* condition);
 

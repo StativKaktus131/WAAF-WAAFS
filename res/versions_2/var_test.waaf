@@ -1,5 +1,13 @@
 / WAAF
 
-> DATA, #DATA % (#STEP % 128)
+/ ONCE
+
+> $coocoo, 123
+> $penis, 10 
+
+. $coocoo
+. $coocoo + $penis 
+: $coocoo + $penis 
+
 
 / ENDWAAF

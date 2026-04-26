@@ -166,8 +166,12 @@ void run_command(block_t* block)
 			break;
 
 		case '.':
-			printf("%s\n", args[0]);
+            printf("%s\n", decode_str(args[0]));
 			break;
+
+        case ':':
+            printf("%f\n", *((double*)(decode_eval(args[0]))));
+            break;
 		
 	}
 

@@ -1,6 +1,7 @@
 #include "util.h"
 #include "instrhelp.h"
 #include "strutils.h"
+#include "variable.h"
 
 char* read_file(const char* filepath, size_t* size)
 {
@@ -32,10 +33,42 @@ char* read_file(const char* filepath, size_t* size)
 
 // running methods
 
+char* decode_str(char* orig)
+{
+    char* working_string = (char*) malloc(strlen(orig));
+    strcpy(working_string, orig);
+    
+    
+    while (str_contains(working_string, "$"))
+    {
+        // printf("'%s'\n", working_string);
+
+        size_t idx = str_find_index(working_string, "$", 1);
+        size_t to = idx;
+        
+        while (!isspace(working_string[to]) && to < strlen(working_string))
+            to++;
+        
+        char varname[to - idx];
+        strncpy(varname, &working_string[idx], to - idx);
+
+        variable_t* var = stack[v_idx(&varname[1])];
+
+
+        char* rep = str_replace(working_string, varname, var->value);
+        working_string = (char*) realloc(working_string, strlen(rep));
+        strcpy(working_string, rep);
+    }
+
+
+    return working_string; 
+}
+
+
 void* decode_eval(char* value)
 {
 	// printf("VALUE: %s\n", value);
-	char* stripped = str_trim(value);
+	char* stripped = str_trim(decode_str(value));
 
 	// printf("len of: %s; %zu\n", stripped, strlen(stripped));
 
@@ -174,6 +207,23 @@ void set(char* arg1, char* arg2)
 
 	double ret_dbl = *((double*) ret);
 
+
+    if (arg1[0] == '$')
+    {
+        // variable
+        // printf("register variable: '%s' with variable: '%f'\n", &arg1[1], ret_dbl);
+        
+        // printf("'%s' is declared: %d\n", &arg1[1], v_is_declared(&arg1[1]));
+        if (!v_is_declared(&arg1[1]))
+        {
+            v_declare(&arg1[1]);
+        }
+        
+        v_set(&arg1[1], str_trim(arg2));
+
+        // print_stack();
+
+    }
 	if (strcmp(arg1, "DATA") == 0)
 	{
 		// printf("data is found, value will be set to %hhu\n", (u8) ret_dbl);
