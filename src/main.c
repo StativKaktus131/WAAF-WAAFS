@@ -1,4 +1,5 @@
 #include "instrhelp.h"
+#include "strutils.h"
 #include "wii.h"
 #include "chunk.h"
 
@@ -67,6 +68,7 @@ chunk_t** analyze_chunks(const char* path, size_t* num_chunks, size_t* filesize)
 	return chunks;
 }
 
+// write chunks to file
 void write_chunks(const char* filepath, chunk_t** chunks, int nchunks, int size)
 {
 	u8 output[size];					// output byte array
@@ -99,14 +101,22 @@ void write_chunks(const char* filepath, chunk_t** chunks, int nchunks, int size)
 }
 
 
-int main()
+int main(int argc, char** args)
 {
+
+    // check if args are given
+    if (argc != 4)
+    {
+        printf("wii <sample path> <output path>\n");
+        return -1;
+    }
+
     // run over whole file per default
     run_once = FALSE;
 
 	// read and analyze file
 	size_t count, filesize;
-	chunk_t** chunks = analyze_chunks("res/Drumloop.wav", &count, &filesize);
+	chunk_t** chunks = analyze_chunks(args[1], &count, &filesize);
 	format_info_t* info;
 
 	// loop through chunks and decode format
@@ -133,14 +143,15 @@ int main()
 
 
     srand(time(NULL));
+    // roll 100 random numbers because the rng is weird
     for (size_t i = 0; i < 100; i++)
         rand();
 
     size_t instr_size = 0;
-    char* instructions = read_file("res/versions_2/example.waaf", &instr_size);
+    char* instructions = read_file(args[3], &instr_size);
     
     size_t spl_size = 0;
-    char** spl_instrs = split(instructions, "\n", &spl_size);
+    char** spl_instrs = str_split(instructions, "\n", &spl_size);
 
 
     size_t skip = 0;
@@ -160,7 +171,7 @@ int main()
 
 	// --------------------------------------------------------
 
-	write_chunks("res/versions_2/example.wav", chunks , 3, filesize);
+	write_chunks(args[2], chunks , 3, filesize);
 
 	printf("\n");
 	return 0;

@@ -2,6 +2,7 @@
 #include "stack.h"
 #include "wii.h"
 #include "instrhelp.h"
+#include "strutils.h"
 
 void print_block(block_t* block)
 {
@@ -150,7 +151,7 @@ void run_command(block_t* block)
 	char id = command[0];
 
 	size_t args_len = 0;
-	char** args = split(&command[2], ",", &args_len);
+	char** args = str_split(&command[2], ",", &args_len);
 
 
 	switch (id)
