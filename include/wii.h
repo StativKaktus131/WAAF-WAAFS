@@ -36,7 +36,6 @@ block_t* new_command(char* command);
 block_t* blockify_instructions(char** instructions, size_t* skip);
 
 
-
 // interprets and executes the block
 void run_block(block_t* block);
 

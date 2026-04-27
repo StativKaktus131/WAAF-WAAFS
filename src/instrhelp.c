@@ -35,6 +35,7 @@ char* read_file(const char* filepath, size_t* size)
 
 char* decode_str(char* orig)
 {
+    // printf("DECODING %s\n", orig);
     char* working_string = (char*) malloc(strlen(orig));
     strcpy(working_string, orig);
     
@@ -54,12 +55,14 @@ char* decode_str(char* orig)
 
         variable_t* var = stack[v_idx(&varname[1])];
 
+        // printf("VAR: %s, has value: %s\n", var->identifier, var->value);
 
         char* rep = str_replace(working_string, varname, var->value);
         working_string = (char*) realloc(working_string, strlen(rep));
         strcpy(working_string, rep);
     }
 
+    // printf("TURNED TO %s\n", working_string);
 
     return working_string; 
 }
@@ -67,10 +70,8 @@ char* decode_str(char* orig)
 
 void* decode_eval(char* value)
 {
-	// printf("VALUE: %s\n", value);
 	char* stripped = str_trim(decode_str(value));
-
-	// printf("len of: %s; %zu\n", stripped, strlen(stripped));
+    
 
 	while (str_contains(stripped, "#RANDOM_FLOAT"))
 	{
@@ -204,22 +205,40 @@ bool eval_condition(char* condition)
 void set(char* arg1, char* arg2)
 {
 	void* ret = decode_eval(arg2);
-
+    
 	double ret_dbl = *((double*) ret);
-
-
+    
+    
     if (arg1[0] == '$')
     {
         // variable
         // printf("register variable: '%s' with variable: '%f'\n", &arg1[1], ret_dbl);
         
         // printf("'%s' is declared: %d\n", &arg1[1], v_is_declared(&arg1[1]));
+
+        // indent: with global variables         
+        bool global = FALSE;
+        // size_t ind = 1;
+
+        
+        // if (arg1[1] == '$')
+        // {
+        //     global = TRUE;
+        //     ind++;
+        // }
+        
         if (!v_is_declared(&arg1[1]))
         {
-            v_declare(&arg1[1]);
+            v_declare(&arg1[1], TRUE);
+            
+            // if (global)
+            //     v_set(&arg1[1], decode_eval(arg2));
+
         }
-        
-        v_set(&arg1[1], str_trim(arg2));
+
+        char res[32];
+        sprintf(res, "%f", ret_dbl);
+        v_set(&arg1[1], res);
 
         // print_stack();
 

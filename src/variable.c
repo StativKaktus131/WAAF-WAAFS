@@ -64,7 +64,7 @@ bool v_is_declared(char* identifier)
     return FALSE;
 }
 
-void v_declare(char* identifier)
+void v_declare(char* identifier, bool global)
 {
     try_init_stack();
 
@@ -72,7 +72,7 @@ void v_declare(char* identifier)
     stack = (variable_t**) realloc(stack, stack_size * sizeof(variable_t*));
 
     // TODO global logic
-    stack[stack_size - 1] = new_variable(identifier, "0", TRUE);
+    stack[stack_size - 1] = new_variable(identifier, "0", global);
 }
 
 void v_set(char* identifier, char* value)

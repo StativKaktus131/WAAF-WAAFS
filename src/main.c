@@ -153,11 +153,21 @@ int main(int argc, char** args)
     size_t spl_size = 0;
     char** spl_instrs = str_split(instructions, "\n", &spl_size);
 
+    // for (size_t i = 0; i < spl_size; i++)
+    // {
+    //     if (strcmp(spl_instrs[i], "/ ENDWAAF") == 0)
+    //         continue;
+        
+    //     size_t len = strlen(spl_instrs[i]);
+    //     spl_instrs[i][len] = ' ';
+    //     spl_instrs[i][len + 1] = '\0';
+    //     printf("'%s'\n", spl_instrs[i]);
+    // }
+
 
     size_t skip = 0;
     block_t* program = blockify_instructions(spl_instrs, &skip);
-
-
+    
     for (size_t i = 0; i < data_chunk->size; i++)
     {
         current_data_pointer = i;
@@ -168,6 +178,13 @@ int main(int argc, char** args)
         if (run_once)
             break;
     }
+
+    printf("---------------------------------------------------------------");
+	printf("\n\n");
+	printf("*---------------------*\n");
+	printf("| ENDING WAAF PROGRAM |\n");
+	printf("*---------------------*\n");
+	printf("\n");
 
 	// --------------------------------------------------------
 

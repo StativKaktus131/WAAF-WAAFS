@@ -45,12 +45,14 @@ block_t* new_command(char* command)
 block_t* blockify_instructions(char** instructions, size_t* skip)
 {
 	// skips all tabstops and spaces
-	size_t first_char = 0;
-	while (instructions[0][first_char] == '\t' || instructions[0][first_char] == ' ')
-		first_char++;
-	
+	// size_t first_char = 0;
+	// while (instructions[0][first_char] == '\t' || instructions[0][first_char] == ' ')
+	// 	first_char++;
+    
+    char* first_line = str_trim(instructions[0]);
+
 	// condition of block (first block will be 'WAAF')
-	char* condition = &instructions[0][first_char + 2];
+	char* condition = &first_line[2];
 
 	// keeping track of block open and of block count
 	bool block_open = TRUE;
@@ -68,12 +70,13 @@ block_t* blockify_instructions(char** instructions, size_t* skip)
 		block_t* b = NULL;
 
 		// skip tabstops and whitespaces again
-		first_char = 0;
-		while (instructions[i][first_char] == '\t' || instructions[i][first_char] == ' ')
-			first_char++;
+		// first_char = 0;
+		// while (instructions[i][first_char] == '\t' || instructions[i][first_char] == ' ')
+		// 	first_char++;
+        char* line = str_trim(instructions[i]);
 
 		// IF block
-		if (instructions[i][first_char] == '?')
+		if (line[0] == '?')
 		{
 			// recursively find nested blocks
 			b = blockify_instructions(&instructions[i], skip);
@@ -82,7 +85,7 @@ block_t* blockify_instructions(char** instructions, size_t* skip)
 			i += *skip;
 		}
 		// end block
-		else if (instructions[i][first_char] == '}')
+		else if (line[0] == '}')
 		{
 			// break out of loop
 			block_open = FALSE;
@@ -94,7 +97,7 @@ block_t* blockify_instructions(char** instructions, size_t* skip)
 			return new_block(condition, IF, b_arr, count - 1);
 		}
 		// end WAAF file
-		else if (strcmp(instructions[i], "/ ENDWAAF") == 0)
+		else if (strcmp(line, "/ ENDWAAF") == 0)
 		{
 			// break out of loop and return waaf block
 			block_open = FALSE;
@@ -103,7 +106,7 @@ block_t* blockify_instructions(char** instructions, size_t* skip)
 		// single line instructions
 		else
 		{
-			b = new_command(&instructions[i][first_char]);
+			b = new_command(line);
 		}
 
 		// dynamically add block to array
