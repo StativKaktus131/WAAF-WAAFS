@@ -1,5 +1,14 @@
-/ WAAF
+/ WAAF 
 
+/ ONCE
 
+> $foo, 15 
+> $bar, 30 
+
+. FOO: $foo 
+. BAR: $bar 
+
+. $foo + $bar 
+: $foo + $bar 
 
 / ENDWAAF
