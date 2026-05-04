@@ -1,6 +1,6 @@
 #include "strutils.h"
 
-// splits a string by delimiter and returns the new size in 'str_size'
+// splits a string by delimiter and returns the new size in 'str_size'; IMPORTANT: dynamically allocates memory, array has to be freed
 char** str_split(char* str, const char* delim, size_t* str_size)
 {
     // buffer is a dynamic array being able to be filled with every iteration

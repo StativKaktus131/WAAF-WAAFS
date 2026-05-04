@@ -41,20 +41,6 @@ void try_init_stack()
 }
 
 
-u8 value_to_u8(variable_t* var)
-{
-    void* v = decode_eval(var->value);
-
-    return 0;
-}
-
-double value_to_dbl(variable_t* var)
-{
-    return 0.0;
-}
-
-
-
 bool v_is_declared(char* identifier)
 {
     for (size_t i = 0; i < stack_size; i++)

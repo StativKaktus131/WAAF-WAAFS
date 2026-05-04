@@ -9,7 +9,8 @@ typedef enum ConditionType
 {
     NONE,
     IF,
-    WHILE
+    WHILE,
+    CALL
 } condition_type_t;
 
 // Every line will be a block. Conditionals can be packed into a block and will contain blocks of blocks
@@ -33,7 +34,7 @@ block_t* new_block(char* condition, condition_type_t condition_type, block_t** i
 block_t* new_command(char* command);
 
 // recursive method to find (nested) instruction blocks
-block_t* blockify_instructions(char** instructions, size_t* skip);
+block_t* blockify_instructions(char** instructions, size_t* skip, condition_type_t condition_type);
 
 
 // interprets and executes the block

@@ -42,13 +42,8 @@ block_t* new_command(char* command)
 }
 
 
-block_t* blockify_instructions(char** instructions, size_t* skip)
+block_t* blockify_instructions(char** instructions, size_t* skip, condition_type_t condition_type)
 {
-	// skips all tabstops and spaces
-	// size_t first_char = 0;
-	// while (instructions[0][first_char] == '\t' || instructions[0][first_char] == ' ')
-	// 	first_char++;
-    
     char* first_line = str_trim(instructions[0]);
 
 	// condition of block (first block will be 'WAAF')
@@ -69,17 +64,13 @@ block_t* blockify_instructions(char** instructions, size_t* skip)
 		// block to add
 		block_t* b = NULL;
 
-		// skip tabstops and whitespaces again
-		// first_char = 0;
-		// while (instructions[i][first_char] == '\t' || instructions[i][first_char] == ' ')
-		// 	first_char++;
         char* line = str_trim(instructions[i]);
 
 		// IF block
-		if (line[0] == '?')
+		if (line[0] == '?' || line[0] == '!')
 		{
 			// recursively find nested blocks
-			b = blockify_instructions(&instructions[i], skip);
+			b = blockify_instructions(&instructions[i], skip, line[0] == '?' ? IF : CALL);
 
 			// skip in instructions
 			i += *skip;
@@ -129,6 +120,10 @@ void run_block(block_t* block)
 		if (!condition_met)
 			return;
 	}
+    else if (block->condition_type == CALL)
+    {
+        printf("CALLED A BLOCK\n");
+    }
 
 	// empty instructions means that its a container block
 	if (strncmp(block->instruction_string, "-", 1) == 0)
@@ -178,5 +173,6 @@ void run_command(block_t* block)
 		
 	}
 
+    free(args);
 	free(command);
 }

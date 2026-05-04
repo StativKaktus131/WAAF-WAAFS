@@ -1,0 +1,8 @@
+/ WAAF
+
+> $foo, #STEP / 2
+> $bar, #STEP
+
+
+
+/ ENDWAAF

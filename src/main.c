@@ -2,6 +2,7 @@
 #include "strutils.h"
 #include "wii.h"
 #include "chunk.h"
+#include "dbginfo.h"
 
 // RIFF / WAVE header, should be identical header in every wave file
 const char check_header[] = {0x52, 0x49, 0x46, 0x46, 0x48, 0x10, 0x0E, 0x00, 0x57, 0x41, 0x56, 0x45};
@@ -15,6 +16,12 @@ chunk_t** analyze_chunks(const char* path, size_t* num_chunks, size_t* filesize)
 	chunk_t** chunks = NULL;			// chunks array
 	size_t count = 0;					// number of chunks
 
+
+    // DEBUGGER -----------------
+    if (dbg_value_of("show_file_io_progress"))
+        printf(">>> [DBG] Audio file loaded: [%s]\n", (file == NULL) ? "FALSE" : "TRUE");
+    // --------------------------
+        
 
 	// check for correct header
 	u8 header[12];
@@ -111,13 +118,16 @@ int main(int argc, char** args)
         return -1;
     }
 
-    // run over whole file per default
+    // initialize debugging flags to make debugging way easier
+    init_dbginfo();
+
     run_once = FALSE;
 
 	// read and analyze file
 	size_t count, filesize;
 	chunk_t** chunks = analyze_chunks(args[1], &count, &filesize);
 	format_info_t* info;
+
 
 	// loop through chunks and decode format
 	for (size_t i = 0; i < count; i++)
@@ -128,45 +138,47 @@ int main(int argc, char** args)
 			data_chunk = chunks[i];
 	}
 
-	print_format_info(info);
 
-	printf("\n");
+    
+    srand(time(NULL));
+    // roll 100 random numbers because the rng is weird
+    for (size_t i = 0; i < 100; i++)
+        rand();
+    
+    size_t instr_size = 0;
+    char* instructions = read_file(args[3], &instr_size);
+    
+    // DEBUGGER -----------------
+    if (dbg_value_of("show_file_io_progress"))
+        printf(">>> [DBG] Instruction file loaded: [%s]\n", (instructions == NULL) ? "FALSE" : "TRUE");
+    
+    {
+        bool buff = dbg_value_of("show_format_info");
+        if (dbg_value_of("show_format_info"))
+        {
+            printf(">>> [DBG] Printing format info:\n");
+            print_format_info(info);
+        }
+    }
+    // --------------------------
+	
+    printf("\n");
 	printf("*------------------------*\n");
 	printf("| BEGINNING WAAF PROGRAM |\n");
 	printf("*------------------------*\n");
 	printf("\n");
     printf("---------------------------------------------------------------");
 	printf("\n");
-
-
-	// ---------------------- PROCESSING ----------------------
-
-
-    srand(time(NULL));
-    // roll 100 random numbers because the rng is weird
-    for (size_t i = 0; i < 100; i++)
-        rand();
-
-    size_t instr_size = 0;
-    char* instructions = read_file(args[3], &instr_size);
     
     size_t spl_size = 0;
     char** spl_instrs = str_split(instructions, "\n", &spl_size);
 
-    // for (size_t i = 0; i < spl_size; i++)
-    // {
-    //     if (strcmp(spl_instrs[i], "/ ENDWAAF") == 0)
-    //         continue;
-        
-    //     size_t len = strlen(spl_instrs[i]);
-    //     spl_instrs[i][len] = ' ';
-    //     spl_instrs[i][len + 1] = '\0';
-    //     printf("'%s'\n", spl_instrs[i]);
-    // }
-
-
     size_t skip = 0;
-    block_t* program = blockify_instructions(spl_instrs, &skip);
+    block_t* program = blockify_instructions(spl_instrs, &skip, NONE);
+
+    // little suspect: test maybe not working in larger waaf files?
+    free(spl_instrs);
+    
     
     for (size_t i = 0; i < data_chunk->size; i++)
     {
