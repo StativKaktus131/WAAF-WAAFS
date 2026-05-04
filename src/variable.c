@@ -7,10 +7,10 @@ variable_t* new_variable(char* identifier, char* value, bool global)
 
     // copy identifier and value (as string)
 
-    ret->identifier = (char*) malloc(strlen(identifier));
+    ret->identifier = (char*) malloc(strlen(identifier) + 1);
     strcpy(ret->identifier, identifier);
 
-    ret->value = (char*) malloc(strlen(value));
+    ret->value = (char*) malloc(strlen(value) + 1);
     strcpy(ret->value, value);
 
     ret->global = global;
@@ -67,7 +67,7 @@ void v_set(char* identifier, char* value)
     {
         if (strcmp(stack[i]->identifier, identifier) == 0)
         {
-            stack[i]->value = realloc(stack[i]->value, strlen(value));
+            stack[i]->value = realloc(stack[i]->value, strlen(value) + 1);
             strcpy(stack[i]->value, value);
         }
     }

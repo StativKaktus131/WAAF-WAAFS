@@ -143,8 +143,8 @@ void run_block(block_t* block)
 
 void run_command(block_t* block)
 {
-	char* command = (char*) malloc(strlen(block->instruction_string));
-	memcpy(command, block->instruction_string, strlen(block->instruction_string));
+	char* command = (char*) malloc(strlen(block->instruction_string) + 1);
+	memcpy(command, block->instruction_string, strlen(block->instruction_string) + 1);
 
 	char id = command[0];
 

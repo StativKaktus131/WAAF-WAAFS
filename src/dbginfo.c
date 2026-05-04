@@ -66,7 +66,8 @@ void init_dbginfo()
 
 	for (size_t i = 0; i < count; i++)
 	{
-		idx_matches[i] = (char*) malloc(strlen(idx_matches_buffer[i]));
+		size_t len = strlen(idx_matches_buffer[i]) + 1;
+		idx_matches[i] = (char*) malloc(len);
 		strcpy(idx_matches[i], idx_matches_buffer[i]);
 	}
 

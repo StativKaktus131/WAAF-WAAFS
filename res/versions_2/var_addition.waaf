@@ -1,8 +1,11 @@
 / WAAF
 
-> $foo, #STEP / 2
-> $bar, #STEP
+> $test, #PROGRESS
+> $bor, #STEP * 1.5
 
+. $test
+. $bor
 
+: $test + $bor
 
 / ENDWAAF
