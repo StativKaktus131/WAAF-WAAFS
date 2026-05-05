@@ -10,7 +10,8 @@ typedef enum ConditionType
     NONE,
     IF,
     WHILE,
-    CALL
+    CALL,
+    LOOP
 } condition_type_t;
 
 // Every line will be a block. Conditionals can be packed into a block and will contain blocks of blocks
@@ -22,6 +23,9 @@ typedef struct Block
     char* instruction_string;
     size_t n_instructions;
 } block_t;
+
+// program block, master block
+block_t* program;
 
 
 // prints a block
@@ -42,3 +46,8 @@ void run_block(block_t* block);
 
 // runs a block only if known that it is a command
 void run_command(block_t* block);
+
+
+// RUNNING METHODS
+bool block_with_condition_exists(block_t* head, char* condition, block_t** out);
+void try_call_method(char* method);

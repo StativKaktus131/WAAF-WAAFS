@@ -3,6 +3,7 @@
 #include "wii.h"
 #include "instrhelp.h"
 #include "strutils.h"
+#include "dbginfo.h"
 
 void print_block(block_t* block)
 {
@@ -66,14 +67,19 @@ block_t* blockify_instructions(char** instructions, size_t* skip, condition_type
 
         char* line = str_trim(instructions[i]);
 
-		// IF block
-		if (line[0] == '?' || line[0] == '!')
-		{
-			// recursively find nested blocks
-			b = blockify_instructions(&instructions[i], skip, line[0] == '?' ? IF : CALL);
 
+		// IF block
+		if (line[0] == '?' || line[0] == '@' || line[0] == 'x')
+		{
+            condition_type_t c = line[0] == '?' ? IF : line[0] == '@' ? CALL : LOOP;
+
+			// recursively find nested blocks
+			b = blockify_instructions(&instructions[i], skip, c);
+
+            printf("I: %zu, skip: %zu\n", i, *skip);
 			// skip in instructions
 			i += *skip;
+
 		}
 		// end block
 		else if (line[0] == '}')
@@ -82,10 +88,17 @@ block_t* blockify_instructions(char** instructions, size_t* skip, condition_type
 			block_open = FALSE;
 			
 			// increase skip
-			*skip += count;
-			
+            // TODO: CHECK MAYBE +=?
+			*skip = count;
+            printf("COUNT: %zu\n", count);
+
+            char stripped_cond[32];
+            strcpy(stripped_cond, condition);
+            if (condition_type == CALL && condition[strlen(condition) - 1] == '{')
+                stripped_cond[strlen(condition) - 2] = '\0';
+            
 			// return block with given condition (count - 1 because it's being increased at the beginning of the loop)
-			return new_block(condition, IF, b_arr, count - 1);
+			return new_block(condition, condition_type, b_arr, count - 1);
 		}
 		// end WAAF file
 		else if (strcmp(line, "/ ENDWAAF") == 0)
@@ -112,6 +125,14 @@ block_t* blockify_instructions(char** instructions, size_t* skip, condition_type
 
 void run_block(block_t* block)
 {
+    // how often block will be run (for loops)
+    size_t amount = 1;
+
+    // DEBUGGER -----------------
+    if (dbg_value_of("show_block_when_run"))
+        print_block(block);
+    // --------------------------
+
 	// only checks for blocks without condition rn
 	if (block->condition_type == IF)
 	{
@@ -120,23 +141,27 @@ void run_block(block_t* block)
 		if (!condition_met)
 			return;
 	}
-    else if (block->condition_type == CALL)
+    else if (block->condition_type == LOOP)
     {
-        printf("CALLED A BLOCK\n");
+        amount = atoi(block->condition);
     }
 
-	// empty instructions means that its a container block
-	if (strncmp(block->instruction_string, "-", 1) == 0)
-	{
-		// runs every instruction block inside
-		for (size_t i = 0; i < block->n_instructions; i++)
-		{
-			run_block(block->instructions[i]);
-		}
-	}
-	// if not run command
-	else
-		run_command(block);
+
+    for (size_t i = 0; i < amount; i++)
+    {
+        // empty instructions means that its a container block
+        if (strncmp(block->instruction_string, "-", 1) == 0 && block->condition_type != CALL)
+        {
+            // runs every instruction block inside
+            for (size_t i = 0; i < block->n_instructions; i++)
+            {
+                run_block(block->instructions[i]);
+            }
+        }
+        // if not run command
+        else
+            run_command(block);
+    }
 }
 
 
@@ -170,9 +195,44 @@ void run_command(block_t* block)
         case ':':
             printf("%f\n", *((double*)(decode_eval(args[0]))));
             break;
+
+        case '!':
+            try_call_method(args[0]);
+            break;
 		
 	}
 
     free(args);
 	free(command);
+}
+
+bool block_with_condition_exists(block_t* head, char* condition, block_t** out)
+{
+    for (size_t i = 0; i < head->n_instructions; i++)
+    {
+        if (strncmp(head->instructions[i]->condition, condition, strlen(condition)) == 0)
+        {
+            *out = head->instructions[i];
+            return TRUE;
+        }
+        else if (strcmp(head->instructions[i]->instruction_string, "-") == 0)
+        {
+            if (block_with_condition_exists(head->instructions[i], condition, out))
+                return TRUE;
+        }
+    }
+    return FALSE;
+}
+
+void try_call_method(char* method)
+{
+    block_t* out = NULL;
+
+    if (block_with_condition_exists(program, method, &out))
+    {
+        for (size_t i = 0; i < out->n_instructions; i++)
+        {
+            run_block(out->instructions[i]);
+        }
+    }
 }

@@ -1,0 +1,15 @@
+/ WAAF
+
+/ ONCE
+
+x 20 {
+    > $num, #RANDOM % 100
+
+    ? $num > 50 {
+        x 3 {
+            . $num
+        }
+    }
+}
+
+/ ENDWAAF

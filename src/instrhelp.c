@@ -168,10 +168,10 @@ bool eval_condition(char* condition)
 	char* left_side_c = (char*) malloc(idx + 1);
 	char* right_side_c = (char*) malloc(strlen(condition) - idx - strlen(comparators[comparator_idx]) + 1);
 
-strncpy(left_side_c, condition, idx);
-left_side_c[idx] = '\0';
-strncpy(right_side_c, &condition[idx + strlen(comparators[comparator_idx])], strlen(condition) - idx - strlen(comparators[comparator_idx]));
-right_side_c[strlen(condition) - idx - strlen(comparators[comparator_idx])] = '\0';
+    strncpy(left_side_c, condition, idx);
+    left_side_c[idx] = '\0';
+    strncpy(right_side_c, &condition[idx + strlen(comparators[comparator_idx])], strlen(condition) - idx - strlen(comparators[comparator_idx]));
+    right_side_c[strlen(condition) - idx - strlen(comparators[comparator_idx])] = '\0';
 
 	double left_side = *((double*) decode_eval(left_side_c));
 	double right_side = *((double*) decode_eval(right_side_c));

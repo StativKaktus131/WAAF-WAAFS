@@ -12,13 +12,13 @@ In this commit, I will implement variables that are usable in comparisons, funct
     - [x] strutils.c
     - [x] variable.c
     - [x] wii.c
-- [ ] Add Loops
-- [ ] Allow multiple comparisons in one line
+- [x] Add Loops
+- [-] Allow multiple comparisons in one line
 
 optional:
 
-- [ ] Implement startup method to allow for global variables
-- [ ] Implement Methods
+- [x] Implement startup method to allow for global variables
+- [x] Implement Methods
 
 __deadline:__ *08.05.2026*
 

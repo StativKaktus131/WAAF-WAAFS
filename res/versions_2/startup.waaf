@@ -1,0 +1,7 @@
+/ WAAF
+
+@ STARTUP {
+    . This is the Startup method
+}
+
+/ ENDWAAF

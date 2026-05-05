@@ -162,6 +162,23 @@ int main(int argc, char** args)
     }
     // --------------------------
 	
+    
+    size_t spl_size = 0;
+    char** spl_instrs = str_split(instructions, "\n", &spl_size);
+
+    size_t skip = 0;
+    program = blockify_instructions(spl_instrs, &skip, NONE);
+
+    // DEBUGGER -----------------
+    if (dbg_value_of("blockify_completion_check"))
+        printf(">>> [DBG] Instructions were succesfully blockified");
+    // --------------------------
+    
+
+    // little suspect: test maybe not working in larger waaf files?
+    free(spl_instrs);
+    
+
     printf("\n");
 	printf("*------------------------*\n");
 	printf("| BEGINNING WAAF PROGRAM |\n");
@@ -169,16 +186,17 @@ int main(int argc, char** args)
 	printf("\n");
     printf("---------------------------------------------------------------");
 	printf("\n");
-    
-    size_t spl_size = 0;
-    char** spl_instrs = str_split(instructions, "\n", &spl_size);
 
-    size_t skip = 0;
-    block_t* program = blockify_instructions(spl_instrs, &skip, NONE);
+    // if startup method exists, call it
+    block_t* startup = NULL;
+    if (block_with_condition_exists(program, "STARTUP", &startup))
+    {
+        for (size_t i = 0; i < startup->n_instructions; i++)
+        {
+            run_block(startup->instructions[i]);
+        }
+    }
 
-    // little suspect: test maybe not working in larger waaf files?
-    free(spl_instrs);
-    
     
     for (size_t i = 0; i < data_chunk->size; i++)
     {
