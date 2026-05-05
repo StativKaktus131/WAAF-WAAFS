@@ -4,7 +4,7 @@ In this commit, I will implement variables that are usable in comparisons, funct
 - [x] Declaring and initialising variables
 - [x] Replacing them with their value in statements and comparisons
 - [x] Add Debug File
-- [ ] Test Memory safety
+- [x] Test Memory safety
     - [x] main.c
     - [x] chunk.c
     - [x] dbginfo.c
@@ -21,6 +21,8 @@ optional:
 - [x] Implement Methods
 
 __deadline:__ *08.05.2026*
+
+> Notes: multiple comparisons are not really necessary, I'd rather work on the next rollout than make a qol change that can be achieved with nested comparisons
 
 ## Producers Rollout
 In this commit I will allow for sample based Editing. This will make it possible to create more artistic code and results.

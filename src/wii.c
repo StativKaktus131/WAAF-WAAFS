@@ -56,29 +56,30 @@ block_t* blockify_instructions(char** instructions, size_t* skip, condition_type
 
 	// instructions array
 	block_t** b_arr = NULL;
-
+    
 	// while loop with index
 	for (size_t i = 1; block_open; i++)
 	{
-		count++;
-
+        count++;
+        
 		// block to add
 		block_t* b = NULL;
-
+        
         char* line = str_trim(instructions[i]);
+        printf("AT I (%zu), skp: (%zu) LINE: '%s'\n", i, *skip, line);
 
-
-		// IF block
+        
+		// blocks; either IF, CALL or LOOP
 		if (line[0] == '?' || line[0] == '@' || line[0] == 'x')
 		{
             condition_type_t c = line[0] == '?' ? IF : line[0] == '@' ? CALL : LOOP;
-
+            
 			// recursively find nested blocks
 			b = blockify_instructions(&instructions[i], skip, c);
-
-            printf("I: %zu, skip: %zu\n", i, *skip);
+            
 			// skip in instructions
 			i += *skip;
+            *skip = 0;
 
 		}
 		// end block
@@ -89,8 +90,7 @@ block_t* blockify_instructions(char** instructions, size_t* skip, condition_type
 			
 			// increase skip
             // TODO: CHECK MAYBE +=?
-			*skip = count;
-            printf("COUNT: %zu\n", count);
+			*skip += count;
 
             char stripped_cond[32];
             strcpy(stripped_cond, condition);
@@ -141,10 +141,9 @@ void run_block(block_t* block)
 		if (!condition_met)
 			return;
 	}
+    // sets the amount of the repetitions to loop amount (stored in condition string)
     else if (block->condition_type == LOOP)
-    {
         amount = atoi(block->condition);
-    }
 
 
     for (size_t i = 0; i < amount; i++)
@@ -171,65 +170,82 @@ void run_command(block_t* block)
 	char* command = (char*) malloc(strlen(block->instruction_string) + 1);
 	memcpy(command, block->instruction_string, strlen(block->instruction_string) + 1);
 
+    // command identifier
 	char id = command[0];
 
+    // getting arguments from command
 	size_t args_len = 0;
 	char** args = str_split(&command[2], ",", &args_len);
 
 
 	switch (id)
 	{
+        // SET instruction
 		case '>':
 			set(args[0], args[1]);
 			break;
 		
+        // MISC instruction / CMD
 		case '/':
 			if (strcmp(args[0], "ONCE") == 0)
 				run_once = TRUE;
 			break;
 
+        // print string
 		case '.':
             printf("%s\n", decode_str(args[0]));
 			break;
 
+        // print value
         case ':':
             printf("%f\n", *((double*)(decode_eval(args[0]))));
             break;
 
+        // call method
         case '!':
             try_call_method(args[0]);
             break;
 		
 	}
 
+    // free dynamically split variables
     free(args);
 	free(command);
 }
 
+
 bool block_with_condition_exists(block_t* head, char* condition, block_t** out)
 {
+    // loop through head instructions
     for (size_t i = 0; i < head->n_instructions; i++)
     {
+        // if condition matches, return TRUE and feed it into out
         if (strncmp(head->instructions[i]->condition, condition, strlen(condition)) == 0)
         {
             *out = head->instructions[i];
             return TRUE;
         }
+        // else if its also a container, recursively call function with new head
         else if (strcmp(head->instructions[i]->instruction_string, "-") == 0)
         {
             if (block_with_condition_exists(head->instructions[i], condition, out))
                 return TRUE;
         }
     }
+
+    // if nothing matches, return false
     return FALSE;
 }
 
+
 void try_call_method(char* method)
 {
+    // set out block
     block_t* out = NULL;
 
     if (block_with_condition_exists(program, method, &out))
     {
+        // run every command (don't call run_block because of CALL condition type guard)
         for (size_t i = 0; i < out->n_instructions; i++)
         {
             run_block(out->instructions[i]);

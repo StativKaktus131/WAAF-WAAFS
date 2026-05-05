@@ -1,7 +1,7 @@
 #include "variable.h"
 #include "instrhelp.h"
 
-variable_t* new_variable(char* identifier, char* value, bool global)
+variable_t* new_variable(char* identifier, char* value)
 {
     variable_t* ret = (variable_t*) malloc(sizeof(variable_t));
 
@@ -13,15 +13,13 @@ variable_t* new_variable(char* identifier, char* value, bool global)
     ret->value = (char*) malloc(strlen(value) + 1);
     strcpy(ret->value, value);
 
-    ret->global = global;
-
     return ret;
 }
 
 
 void print_variable(variable_t* variable)
 {
-    printf("{ VAR: '%s', value: '%s', global: %d }\n", variable->identifier, variable->value, variable->global);
+    printf("{ VAR: '%s', value: '%s' }\n", variable->identifier, variable->value);
 }
 
 void print_stack()
@@ -50,7 +48,7 @@ bool v_is_declared(char* identifier)
     return FALSE;
 }
 
-void v_declare(char* identifier, bool global)
+void v_declare(char* identifier)
 {
     try_init_stack();
 
@@ -58,7 +56,7 @@ void v_declare(char* identifier, bool global)
     stack = (variable_t**) realloc(stack, stack_size * sizeof(variable_t*));
 
     // TODO global logic
-    stack[stack_size - 1] = new_variable(identifier, "0", global);
+    stack[stack_size - 1] = new_variable(identifier, "0");
 }
 
 void v_set(char* identifier, char* value)

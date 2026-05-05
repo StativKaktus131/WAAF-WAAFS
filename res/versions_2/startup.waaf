@@ -1,7 +1,19 @@
 / WAAF
 
+/ ONCE
+
 @ STARTUP {
     . This is the Startup method
+    > $test, 100
+}
+
+x 100 {
+    ? $test < 200 {
+        ? #RANDOM_FLOAT > 0.95 {
+            > $test, $test + 10
+            . $test
+        }
+    }
 }
 
 / ENDWAAF

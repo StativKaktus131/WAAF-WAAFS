@@ -49,5 +49,9 @@ void run_command(block_t* block);
 
 
 // RUNNING METHODS
+
+// checks if any block with the given condition exists and sets a pointer to it in 'out'. Head should be program
 bool block_with_condition_exists(block_t* head, char* condition, block_t** out);
+
+// tries to call a method if it exists
 void try_call_method(char* method);

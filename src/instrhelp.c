@@ -235,7 +235,7 @@ void set(char* arg1, char* arg2)
         
         if (!v_is_declared(&arg1[1]))
         {
-            v_declare(&arg1[1], TRUE);
+            v_declare(&arg1[1]);
 
             // DEBUGGER -----------------
             if (dbg_value_of("show_stack_after_var_init"))
@@ -256,4 +256,5 @@ void set(char* arg1, char* arg2)
 		data_chunk->data[current_data_pointer] = (u8) ret_dbl;
 	}
 
-    free(ret);}
+    free(ret);
+}
