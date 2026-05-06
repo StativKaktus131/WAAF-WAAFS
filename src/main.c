@@ -3,6 +3,7 @@
 #include "wii.h"
 #include "chunk.h"
 #include "dbginfo.h"
+#include "sound.h"
 
 // RIFF / WAVE header, should be identical header in every wave file
 const char check_header[] = {0x52, 0x49, 0x46, 0x46, 0x48, 0x10, 0x0E, 0x00, 0x57, 0x41, 0x56, 0x45};
@@ -121,22 +122,28 @@ int main(int argc, char** args)
     // initialize debugging flags to make debugging way easier
     init_dbginfo();
 
+    mode = BYTE;
+
     run_once = FALSE;
 
 	// read and analyze file
 	size_t count, filesize;
 	chunk_t** chunks = analyze_chunks(args[1], &count, &filesize);
-	format_info_t* info;
+
 
 
 	// loop through chunks and decode format
 	for (size_t i = 0; i < count; i++)
 	{
 		if (chunk_is(chunks[i], "fmt "))
-			info = decode_format_chunk(chunks[i]);
+			file_format_info = decode_format_chunk(chunks[i]);
 		else if (chunk_is(chunks[i], "data"))
 			data_chunk = chunks[i];
 	}
+
+
+    // read sample data
+    populate_samples();
 
 
     
@@ -157,7 +164,7 @@ int main(int argc, char** args)
         if (dbg_value_of("show_format_info"))
         {
             printf(">>> [DBG] Printing format info:\n");
-            print_format_info(info);
+            print_format_info(file_format_info);
         }
     }
     // --------------------------
@@ -197,16 +204,34 @@ int main(int argc, char** args)
         }
     }
 
-    
-    for (size_t i = 0; i < data_chunk->size; i++)
-    {
-        current_data_pointer = i;
-        progress = i / (float) data_chunk->size;
+    run_preprocessor(program);
 
-        run_block(program);
-        
-        if (run_once)
-            break;
+
+    if (mode == BYTE)
+    {
+        for (size_t i = 0; i < data_chunk->size; i++)
+        {
+            current_data_pointer = i;
+            progress = i / (float) data_chunk->size;
+    
+            run_block(program);
+            
+            if (run_once)
+                break;
+        }
+    }
+    else
+    {
+        for (size_t i = 0; i < n_samples; i++)
+        {
+            current_sample_pointer = i;
+            progress = i / (float) n_samples;
+
+            run_block(program);
+
+            if (run_once)
+                break;
+        }
     }
 
     printf("---------------------------------------------------------------");
@@ -218,6 +243,10 @@ int main(int argc, char** args)
 
 	// --------------------------------------------------------
 
+ 
+    if (mode == SAMPLE_MONO || mode == SAMPLE_STEREO)
+        write_samples_to_data_chunk();
+    
 	write_chunks(args[2], chunks , 3, filesize);
 
 	printf("\n");

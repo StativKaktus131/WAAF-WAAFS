@@ -15,6 +15,17 @@ u32 next_u32(u8* data, int* address_pointer)
 	return ret;
 }
 
+u32 next_u24_as_u32(u8* data, int* address_pointer)
+{
+    u32 ret = 0;
+    for (int i = 0; i < 3; i++)
+		ret |= data[*address_pointer + i] << (i * 8);
+    
+    *address_pointer += 3;
+
+    return ret;
+}
+
 u16 next_u16(u8* data, int* address_pointer)
 {
 	u16 ret = 0;
@@ -29,6 +40,11 @@ u16 next_u16(u8* data, int* address_pointer)
 	return ret; 
 }
 
+void u24_as_u8_array(u32 num, u8* fill)
+{
+    for (int i = 0; i < 3; i++)
+        fill[i] = (num >> i * 8) & 0xff;
+}
 
 chunk_t* new_chunk(u8* chunkID, u32 size, u8* data)
 {

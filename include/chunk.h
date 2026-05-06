@@ -21,10 +21,15 @@ typedef struct FormatInfo
 	u32 avgByteRate;
 } format_info_t;
 
+format_info_t* file_format_info;
+
 
 // next methods: advance the pointer by the appropriate size and returns the next unsigned value (little-endian format)
 u32 next_u32(u8* data, int* address_pointer);
+u32 next_u24_as_u32(u8* data, int* address_pointer);
 u16 next_u16(u8* data, int* address_pointer);
+
+void u24_as_u8_array(u32 num, u8* fill);
 
 // returns a pointer to a new chunk with the given id, size and data
 chunk_t* new_chunk(u8* chunkID, u32 size, u8* data);

@@ -14,6 +14,7 @@ typedef enum ConditionType
     LOOP
 } condition_type_t;
 
+
 // Every line will be a block. Conditionals can be packed into a block and will contain blocks of blocks
 typedef struct Block
 {
@@ -24,7 +25,7 @@ typedef struct Block
     size_t n_instructions;
 } block_t;
 
-// program block, master block
+// program block, master blsock
 block_t* program;
 
 
@@ -43,6 +44,8 @@ block_t* blockify_instructions(char** instructions, size_t* skip, condition_type
 
 // interprets and executes the block
 void run_block(block_t* block);
+
+void run_preprocessor(block_t* block);
 
 // runs a block only if known that it is a command
 void run_command(block_t* block);

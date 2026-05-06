@@ -27,7 +27,7 @@ __deadline:__ *08.05.2026*
 ## Producers Rollout
 In this commit I will allow for sample based Editing. This will make it possible to create more artistic code and results.
 
-- [ ] MODE switching
+- [x] MODE switching
 - [ ] Indexing
 - [ ] Test for memory safety
 

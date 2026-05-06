@@ -1,0 +1,7 @@
+/ WAAF
+
+/ MODE, SAMPLE_MONO
+
+> DATA, ((#DATA * 16) % 4) / 4
+
+/ ENDWAAF

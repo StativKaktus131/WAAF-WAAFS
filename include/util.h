@@ -11,6 +11,8 @@
 #define u32 unsigned long   // %lu
 #define u16 unsigned int    // %u
 #define u8 unsigned char    // %c, %x, %zu
+#define f32 float           // %f
+#define i32 int32_t
 
 /* 
  * chunk printing logic:

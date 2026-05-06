@@ -66,7 +66,7 @@ block_t* blockify_instructions(char** instructions, size_t* skip, condition_type
 		block_t* b = NULL;
         
         char* line = str_trim(instructions[i]);
-        printf("AT I (%zu), skp: (%zu) LINE: '%s'\n", i, *skip, line);
+        // printf("AT I (%zu), skp: (%zu) LINE: '%s'\n", i, *skip, line);
 
         
 		// blocks; either IF, CALL or LOOP
@@ -96,7 +96,7 @@ block_t* blockify_instructions(char** instructions, size_t* skip, condition_type
             strcpy(stripped_cond, condition);
             if (condition_type == CALL && condition[strlen(condition) - 1] == '{')
                 stripped_cond[strlen(condition) - 2] = '\0';
-            
+
 			// return block with given condition (count - 1 because it's being increased at the beginning of the loop)
 			return new_block(condition, condition_type, b_arr, count - 1);
 		}
@@ -163,6 +163,43 @@ void run_block(block_t* block)
     }
 }
 
+void run_preprocessor(block_t* block)
+{
+    if (strcmp(block->instruction_string, "-") == 0)
+    {
+        for (size_t i = 0; i < block->n_instructions; i++)
+            run_preprocessor(block->instructions[i]);
+    }
+    else
+    {
+        char* command = (char*) malloc(strlen(block->instruction_string) + 1);
+        memcpy(command, block->instruction_string, strlen(block->instruction_string) + 1); 
+
+        char id = command[0];
+
+        size_t args_len = 0;
+        char** args = str_split(&command[2], ",", &args_len);
+
+        if (id == '/')
+        {
+			if (strcmp(args[0], "ONCE") == 0)
+				run_once = TRUE;
+            else if (strcmp(args[0], "MODE") == 0)
+            {
+                if (strcmp(str_trim(args[1]), "BYTE") == 0)
+                    mode = BYTE;
+                else if (strcmp(str_trim(args[1]), "SAMPLE_MONO") == 0)
+                    mode = SAMPLE_MONO;
+                else if (strcmp(str_trim(args[1]), "SAMPLE_STEREO") == 0)
+                    mode = SAMPLE_STEREO;
+                
+            }
+        }
+
+        free(command);
+        free(args);
+    }
+}
 
 
 void run_command(block_t* block)
@@ -183,12 +220,6 @@ void run_command(block_t* block)
         // SET instruction
 		case '>':
 			set(args[0], args[1]);
-			break;
-		
-        // MISC instruction / CMD
-		case '/':
-			if (strcmp(args[0], "ONCE") == 0)
-				run_once = TRUE;
 			break;
 
         // print string
@@ -219,6 +250,7 @@ bool block_with_condition_exists(block_t* head, char* condition, block_t** out)
     // loop through head instructions
     for (size_t i = 0; i < head->n_instructions; i++)
     {
+        // printf("COMPARING: '%s', '%s'\n", head->instructions[i]->condition, condition);
         // if condition matches, return TRUE and feed it into out
         if (strncmp(head->instructions[i]->condition, condition, strlen(condition)) == 0)
         {

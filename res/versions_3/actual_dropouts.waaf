@@ -1,0 +1,9 @@
+/ WAAF
+
+/ MODE, SAMPLE_MONO
+
+? #STEP % 100 > 50 {
+    > DATA, 0
+}
+
+/ ENDWAAF

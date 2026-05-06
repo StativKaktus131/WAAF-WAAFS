@@ -3,6 +3,7 @@
 #include "strutils.h"
 #include "variable.h"
 #include "dbginfo.h"
+#include "sound.h"
 
 char* read_file(const char* filepath, size_t* size)
 {
@@ -125,11 +126,16 @@ void* decode_eval(char* value)
     while (str_contains(stripped, "#DATA"))
     {
         char str[16];
-        snprintf(str, sizeof(str), "%hhu", data_chunk->data[current_data_pointer]);
+
+        if (mode == BYTE)
+            snprintf(str, sizeof(str), "%hhu", data_chunk->data[current_data_pointer]);
+        else
+            snprintf(str, sizeof(str), "%f", samples_left[current_sample_pointer]);
 
 		char* rplcd = str_replace(stripped, "#DATA", str);
 		free(decoded);
 		decoded = rplcd;
+
 		stripped = str_trim(decoded);
     }
 
@@ -226,7 +232,7 @@ void set(char* arg1, char* arg2)
 	void* ret = decode_eval(arg2);
     
 	double ret_dbl = *((double*) ret);
-    
+
     
     if (arg1[0] == '$')
     {
@@ -253,7 +259,14 @@ void set(char* arg1, char* arg2)
     }
 	if (strcmp(arg1, "DATA") == 0)
 	{
-		data_chunk->data[current_data_pointer] = (u8) ret_dbl;
+        if (mode == BYTE)
+            data_chunk->data[current_data_pointer] = (u8) ret_dbl;
+        else
+        {
+            // printf("SETTING TO %f\n", ret_dbl);
+            samples_left[current_sample_pointer] = (f32) ret_dbl;
+            samples_right[current_sample_pointer] = (f32) ret_dbl;
+        }
 	}
 
     free(ret);
