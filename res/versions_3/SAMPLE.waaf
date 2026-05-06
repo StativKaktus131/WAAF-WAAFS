@@ -2,6 +2,6 @@
 
 / MODE, SAMPLE_MONO
 
-> DATA, ((#DATA * 16) % 4) / 4
+> DATA, #DATA * 0.02
 
 / ENDWAAF
