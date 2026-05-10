@@ -1,7 +1,7 @@
 *.DS_Store
 *.wav
 
-/misc/
+/misc/*
 /res/
 
 /run.sh
