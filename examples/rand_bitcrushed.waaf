@@ -1,0 +1,7 @@
+/ WAAF
+
+? #RANDOM % 100 >= 50 {
+    > DATA, 0
+}
+
+/ ENDWAAF

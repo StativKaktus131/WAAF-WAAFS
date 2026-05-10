@@ -1,6 +1,6 @@
 #pragma once
 
-#include "util.h"
+#include "util/util.h"
 
 // chunk of data stored in wave file
 typedef struct Chunk 

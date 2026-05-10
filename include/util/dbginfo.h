@@ -1,11 +1,11 @@
 #pragma once
 
-#include "util.h"
-#define N_DEBUG_FLAGS 3
+#include "util/util.h"
 
 
 char** idx_matches;
-u8 dbginfo;
+u32 dbginfo;
+size_t n_debug_flags;
 
 void init_dbginfo();
 bool dbg_value_of(const char* identifier);

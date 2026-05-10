@@ -1,7 +1,6 @@
-#include "sound.h"
-#include "chunk.h"
-#include "wii.h"
 #include "instrhelp.h"
+#include "sound.h"
+#include "wii.h"
 
 void populate_samples()
 {

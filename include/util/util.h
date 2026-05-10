@@ -6,7 +6,7 @@
 #include <math.h>
 #include <time.h>
 
-#include "tinyexpr.h"
+#include "util/tinyexpr.h"
 
 #define u32 unsigned long   // %lu
 #define u16 unsigned int    // %u

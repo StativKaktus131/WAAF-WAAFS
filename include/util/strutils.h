@@ -1,7 +1,7 @@
 // in here there will be multiple string utility functions to make manipulating strings easier
 #pragma once
 
-#include "util.h"
+#include "util/util.h"
 
 // splits a string by delimiter and returns the new size in 'str_size'
 char** str_split(char* str, const char* delim, size_t* str_size);

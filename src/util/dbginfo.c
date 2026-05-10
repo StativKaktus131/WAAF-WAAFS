@@ -1,5 +1,5 @@
-#include "dbginfo.h"
-#include "strutils.h"
+#include "util/dbginfo.h"
+#include "util/strutils.h"
 
 
 void init_dbginfo()
@@ -58,13 +58,16 @@ void init_dbginfo()
 
 		free(sides);
 	}
+
+    n_debug_flags = count;
+
 	
 	free(dbglines);
 
 	// copy array
-	idx_matches = (char**) malloc(count * sizeof(char*));
+	idx_matches = (char**) malloc(n_debug_flags * sizeof(char*));
 
-	for (size_t i = 0; i < count; i++)
+	for (size_t i = 0; i < n_debug_flags; i++)
 	{
 		size_t len = strlen(idx_matches_buffer[i]) + 1;
 		idx_matches[i] = (char*) malloc(len);
@@ -77,7 +80,7 @@ void init_dbginfo()
 
 bool dbg_value_of(const char* identifier)
 {
-	for (size_t i = 0; i < N_DEBUG_FLAGS; i++)
+	for (size_t i = 0; i < n_debug_flags; i++)
 	{
 		if (strcmp(idx_matches[i], identifier) == 0)
 			return (dbginfo >> i) & 1;

@@ -1,8 +1,7 @@
-#include "util.h"
+#include "util/strutils.h"
+#include "util/dbginfo.h"
 #include "instrhelp.h"
-#include "strutils.h"
 #include "variable.h"
-#include "dbginfo.h"
 #include "sound.h"
 
 char* read_file(const char* filepath, size_t* size)
@@ -79,8 +78,32 @@ void* decode_eval(char* value)
 {
 	char* decoded = decode_str(value);
 	char* stripped = str_trim(decoded);
-    
 
+    bool contains_brackets = str_contains(stripped, "[") && str_contains(stripped, "]");
+    
+    if (contains_brackets) 
+    {
+        printf("STRIPPED: '%s'\n", stripped);
+        int close_idx = str_find_index(stripped, "]", strlen(stripped));
+        int open_idx = str_find_index(stripped, "[", strlen(stripped));
+        size_t len_bracket = str_find_index(stripped, "]", strlen(stripped)) - str_find_index(stripped, "[", strlen(stripped));
+        printf("len: %zu, open: %d, close: %d\n", len_bracket, open_idx, close_idx);
+        char v[len_bracket];
+        strncpy(v, &stripped[str_find_index(stripped, "[", strlen(stripped))], len_bracket);
+
+        printf("BRACKET: %s\n", v);
+    }
+
+	while (str_contains(stripped, "#N_SAMPLES"))
+	{
+		char str[16];
+		snprintf(str, sizeof(str), "%zu", n_samples);
+
+		char* rplcd = str_replace(stripped, "#N_SAMPLES", str);
+		free(decoded);
+		decoded = rplcd;
+		stripped = str_trim(decoded);
+	}
 	while (str_contains(stripped, "#RANDOM_FLOAT"))
 	{
 		float random = rand() / (float) RAND_MAX;
@@ -116,7 +139,8 @@ void* decode_eval(char* value)
     while (str_contains(stripped, "#STEP"))
     {
         char str[16];
-        snprintf(str, sizeof(str), "%zu", current_data_pointer);
+
+        snprintf(str, sizeof(str), "%zu", (mode == BYTE) ? current_data_pointer : current_sample_pointer);
 
 		char* rplcd = str_replace(stripped, "#STEP", str);
 		free(decoded);

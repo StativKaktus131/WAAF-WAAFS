@@ -1,9 +1,7 @@
-#include "util.h"
-#include "stack.h"
+#include "util/strutils.h"
+#include "util/dbginfo.h"
 #include "wii.h"
 #include "instrhelp.h"
-#include "strutils.h"
-#include "dbginfo.h"
 
 void print_block(block_t* block)
 {

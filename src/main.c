@@ -1,8 +1,7 @@
+#include "util/strutils.h"
+#include "util/dbginfo.h"
 #include "instrhelp.h"
-#include "strutils.h"
 #include "wii.h"
-#include "chunk.h"
-#include "dbginfo.h"
 #include "sound.h"
 
 // RIFF / WAVE header, should be identical header in every wave file

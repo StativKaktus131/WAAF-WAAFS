@@ -1,7 +1,0 @@
-/ WAAF
-
-/ MODE, SAMPLE_MONO
-
-> DATA, #DATA * 0.02
-
-/ ENDWAAF

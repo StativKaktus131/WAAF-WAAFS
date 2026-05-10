@@ -1,7 +1,6 @@
 // waaf instant interpreter
 #pragma once
 
-#include "util.h"
 #include "chunk.h"
 
 // IF only runs block once, WHILE runs while condition stays true
