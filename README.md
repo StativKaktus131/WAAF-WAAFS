@@ -4,6 +4,36 @@
 
 WAAF is a programming language, which enables you to write simple code to analyze and manipulate .wav files.
 
+## Supported formats
+
+Currently, the raw data to sample conversion only works with 24-bit PCM .wav files. I'm going to implement support for 16 and 32-bit files as well but right now, I'm too lazy for that.
+
+## Compilation and Running
+
+Because I don't know how to use make and create makefiles, it's possible to compile this project with the gcc compiler like this:
+
+_Shell:_
+```shell
+util_files="src/util/dbginfo.c src/util/strutils.c src/util/tinyexpr.c"
+files="src/chunk.c src/instrhelp.c src/main.c src/sound.c src/variable.c src/wii.c"
+
+gcc -o waaf $util_files $files -Iinclude
+```
+
+_Batch (not tested):_
+```bat
+set util_files = "src/util/dbginfo.c src/util/strutils.c src/util/tinyexpr.c"
+set files = "src/chunk.c src/instrhelp.c src/main.c src/sound.c src/variable.c src/wii.c"
+
+gcc -o waaf %util_files% %files% -Iinclude
+```
+
+To run your program you pass the arguments like so:
+```
+./waaf <Source File> <Output File> <WAAF File>
+```
+
+
 ## Code
 The WAAF interpreter generally works with single character instructions.
 
@@ -135,30 +165,3 @@ x 20 {
 ```
 
 This code runs 20 times and increases the _$i_ variable by 1 each iteration.
-
-
-## Supported formats
-
-Currently, the raw data to sample conversion only works with 24-bit PCM .wav files. I'm going to implement support for 16 and 32-bit files as well but right now, I'm too lazy for that.
-
-## Compilation
-
-Because I don't know how to use make and create makefiles, it's possible to compile this project with the gcc compiler like this:
-
-_Shell:_
-```shell
-util_files="src/util/dbginfo.c src/util/strutils.c src/util/tinyexpr.c"
-files="src/chunk.c src/instrhelp.c src/main.c src/sound.c src/variable.c src/wii.c"
-
-gcc -o waaf $util_files $files -Iinclude
-./waaf $1 $2 $3
-```
-
-_Batch (not tested):_
-```bat
-set util_files = "src/util/dbginfo.c src/util/strutils.c src/util/tinyexpr.c"
-set files = "src/chunk.c src/instrhelp.c src/main.c src/sound.c src/variable.c src/wii.c"
-
-gcc -o main %util_files% %files% -Iinclude
-main %1 %2 %3
-```
