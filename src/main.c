@@ -114,7 +114,7 @@ int main(int argc, char** args)
     // check if args are given
     if (argc != 4)
     {
-        printf("wii <sample path> <output path>\n");
+        printf("waaf <sample path> <output path>\n");
         return -1;
     }
 
