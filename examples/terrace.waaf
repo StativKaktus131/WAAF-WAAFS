@@ -1,0 +1,19 @@
+/ WAAF
+
+/ MODE, SAMPLE_MONO
+
+@ STARTUP {
+    > $counter, 0
+    > $last, 0
+}
+
+? $counter % 200 == 0 {
+    > $last, #DATA
+}
+
+> DATA, $last
+
+> $counter, $counter + 1
+
+
+/ ENDWAAF

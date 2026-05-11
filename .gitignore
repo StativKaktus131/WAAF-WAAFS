@@ -1,7 +1,8 @@
 *.DS_Store
 *.wav
+*.sh
+
+waaf
 
 /misc/*
 /res/
-
-/run.sh

@@ -1,0 +1,26 @@
+/ WAAF
+/ MODE, SAMPLE_MONO
+
+@ reset_max {
+    > $max, #RANDOM % 3000 + 1000
+    . $max
+}
+
+@ STARTUP {
+    > $counter, 0
+    > $switch, 0
+}
+
+> $counter, $counter + 1
+
+? $counter == $max {
+    ! reset_max
+    > $counter, 0
+    > $switch, 1 - $switch
+}
+
+? $switch == 1 {
+    > DATA, 0
+}
+
+/ ENDWAAF

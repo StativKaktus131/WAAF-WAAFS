@@ -1,4 +1,4 @@
-![](res/readme/waaf.png)
+<img width="295" height="230" alt="waaf_downscaled" src="https://github.com/user-attachments/assets/b09c37cf-5542-457e-b23c-8cc196ae5574" />
 
 # WAAF Programming Language
 
@@ -40,6 +40,7 @@ The WAAF interpreter generally works with single character instructions.
 ### Environment Variables
 The WAAF programming language let's you retrieve data with multiple environment variables. To retrieve them you simply write them into expressions.
 * **#DATA**: The given byte / sample at the current position
+* **#N_SAMPLES**: The maximum number of samples in the file
 * **#STEP**: The current step / position.
 * **#PROGRESS**: The current progress through the file (from 0.0 to 1.0)
 * **#RANDOM**: A random integer value
@@ -51,6 +52,19 @@ The WAAF programming language let's you retrieve data with multiple environment 
 You start a WAAF file with "/ WAAF" and end it with "/ ENDWAAF". There are different Precompiler flags you can change with the '/' instruction, such as:
 * **ONCE**: only makes the code run once. Great for general console tests (Hello World)
 * **MODE, [value]**: Changes the mode from byte manipulation to sample manipulation. Available values are: _BYTE, SAMPLE_MONO, SAMPLE_STEREO_. More on this later.
+
+
+### Comments
+
+Any lines that don't start with an instruction character, or closing curly bracket, are treated as comments.
+
+To make readability of the file easier, by convention you would start a comment with '"' and close it as well.
+
+```
+this is a comment
+" this is a comment as well
+" this, also, is a comment "
+```
 
 
 ### Set instruction
