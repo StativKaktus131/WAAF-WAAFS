@@ -43,6 +43,7 @@ The WAAF programming language let's you retrieve data with multiple environment 
 * **#N_SAMPLES**: The maximum number of samples in the file
 * **#STEP**: The current step / position.
 * **#PROGRESS**: The current progress through the file (from 0.0 to 1.0)
+* **#BEAT**: The current beat (only works in sample mode and if bpm is defined, see 'SET')
 * **#RANDOM**: A random integer value
 * **#RANDOM_FLOAT**: A random Float value (from 0.0 to 1.0)
 
@@ -77,7 +78,8 @@ The schematic is
 ```
 
 To create variables, you declare the name with a preceding '$' and initialise it with the following value.
-To manipulate data, you put 'DATA' as the target and feed it the given value. 
+To manipulate data, you put 'DATA' as the target and feed it the given value.
+To set the bpm of a track, you put 'BPM' as the target. It's important to note, that the bpm feature only works in sample mode.
 
 **For example:**
 

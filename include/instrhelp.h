@@ -22,6 +22,9 @@ intp_mode_t mode;
 bool run_once;
 float progress;
 
+// data
+float bpm;
+
 
 // running methods
 char* decode_str(char* orig);           // inserts variables in string

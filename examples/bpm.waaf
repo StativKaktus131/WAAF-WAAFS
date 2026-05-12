@@ -1,0 +1,33 @@
+/ WAAF
+
+/ MODE, SAMPLE_MONO
+
+@ STARTUP {
+    . STARTUP METHOD CALLED
+    > BPM, 150
+    > $beat_i, 0
+    > $mul, 0.04
+}
+
+
+" this method rounds the current beat to the next 0.5 decimal (0.0, 0.5, 1.0, 1.5, ...) "
+@ round_beats {
+    > $beat_i, #BEAT - (#BEAT % 0.5)
+}
+
+! round_beats
+
+" playing with modulo and multiplier produces different results "
+? ($beat_i * 2.0) % 4 == 0 {
+    > DATA, ($mul * #DATA) % 0.8
+}
+
+" clipping "
+? #DATA > 1.0 {
+    > DATA, 1.0
+}
+? #DATA < -1.0 {
+    > DATA, -1.0
+}
+
+/ ENDWAAF

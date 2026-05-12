@@ -162,6 +162,21 @@ void* decode_eval(char* value)
 
 		stripped = str_trim(decoded);
     }
+    while (str_contains(stripped, "#BEAT"))
+    {
+        double current_second = ((double) current_sample_pointer) / file_format_info->sampleRate;
+        double beat = (current_second * bpm) / 60.0;
+
+        char str[16];
+
+        snprintf(str, sizeof(str), "%f", beat);
+
+		char* rplcd = str_replace(stripped, "#BEAT", str);
+		free(decoded);
+		decoded = rplcd;
+
+		stripped = str_trim(decoded);
+    }
 
     double* result = (double*) malloc(sizeof(double));
     *result = te_interp(stripped, 0);
@@ -292,6 +307,10 @@ void set(char* arg1, char* arg2)
             samples_right[current_sample_pointer] = (f32) ret_dbl;
         }
 	}
+    if (strcmp(arg1, "BPM") == 0)
+    {
+        bpm = (float) ret_dbl;
+    }
 
     free(ret);
 }
