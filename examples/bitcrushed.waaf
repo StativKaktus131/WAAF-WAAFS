@@ -1,0 +1,10 @@
+/ WAAF
+
+> $test, #RANDOM_FLOAT
+
+
+? $test < 0.1 {
+    > DATA, 0
+}
+
+/ ENDWAAF

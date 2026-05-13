@@ -5,7 +5,7 @@
 #include "sound.h"
 
 // RIFF / WAVE header, should be identical header in every wave file
-const char check_header[] = {0x52, 0x49, 0x46, 0x46, 0x48, 0x10, 0x0E, 0x00, 0x57, 0x41, 0x56, 0x45};
+const char check_header[] = {0x52, 0x49, 0x46, 0x46, 0x57, 0x41, 0x56, 0x45};
 
 
 // analyzes chunks from given file
@@ -24,10 +24,10 @@ chunk_t** analyze_chunks(const char* path, size_t* num_chunks, size_t* filesize)
         
 
 	// check for correct header
-	u8 header[12];
-	fread(header, sizeof(u8), 12, file);
+	char header[12];
+    fread(header, sizeof(u8), 12, file);
 
-	if (memcmp(header, check_header, 12))
+	if (strncmp(header, check_header, 4) != 0 || strncmp(&header[8], &check_header[4], 4) != 0)
 		printf("file is not a wave file\n");
 
 
@@ -76,12 +76,28 @@ chunk_t** analyze_chunks(const char* path, size_t* num_chunks, size_t* filesize)
 }
 
 // write chunks to file
-void write_chunks(const char* filepath, chunk_t** chunks, int nchunks, int size)
+void write_chunks(const char* filepath, chunk_t** chunks, int nchunks, size_t size)
 {
-	u8 output[size];					// output byte array
-	memcpy(output, check_header, 12);	// copy the header into first output region
+    u8* output = (u8*) malloc(size); 
+    if (output == NULL) {
+        printf("Failed to allocate memory for output buffer\n");
+        return;
+    }
+
+    u32 riff_size = (u32) (size - 8);
+
+	memcpy(output, "RIFF", 4);	// copy the header into first output region
+    memcpy(&output[4], &riff_size, 4);
+    memcpy(&output[8], "WAVE", 4);
 	size_t address_pointer = 12;		// keep track of position
 
+    for (size_t i = 0; i < 12; i++)
+    {
+        printf("%c", output[i]);
+    }
+    printf("\n");
+
+    
 	for (int i = 0; i < nchunks; i++)
 	{
 		// write chunk ID
@@ -103,6 +119,7 @@ void write_chunks(const char* filepath, chunk_t** chunks, int nchunks, int size)
 	FILE* fptr = fopen(filepath, "wb+");
 
 	fwrite(output, sizeof(u8), address_pointer, fptr);
+    free(output);
 
 	fclose(fptr);
 }
@@ -139,7 +156,6 @@ int main(int argc, char** args)
 		else if (chunk_is(chunks[i], "data"))
 			data_chunk = chunks[i];
 	}
-
 
     // read sample data
     populate_samples();
@@ -245,8 +261,8 @@ int main(int argc, char** args)
  
     if (mode == SAMPLE_MONO || mode == SAMPLE_STEREO)
         write_samples_to_data_chunk();
-    
-	write_chunks(args[2], chunks , 3, filesize);
+
+	write_chunks(args[2], chunks , count, filesize);
 
 	printf("\n");
 	return 0;
