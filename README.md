@@ -6,7 +6,7 @@ WAAF is a programming language, which enables you to write simple code to analyz
 
 ## Supported formats
 
-Currently, the raw data to sample conversion only works with 24-bit PCM .wav files. I'm going to implement support for 16 and 32-bit files as well but right now, I'm too lazy for that.
+WAAF supports 16-, 24-, and 32-bit PCM wav files. Important: the your file is loaded onto the heap, watch out for big filesizes.
 
 ## Compilation and Running
 
