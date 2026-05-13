@@ -1,5 +1,6 @@
-show_file_io_progress:  	    true
+show_file_io_progress:  	    false
 show_format_info:				false
 show_stack_after_var_init:		false
 show_block_when_run:            false
-blockify_completion_check:      true
+blockify_completion_check:      false
+show_lines_on_blockify:         false

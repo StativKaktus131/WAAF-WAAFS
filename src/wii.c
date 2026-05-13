@@ -64,7 +64,9 @@ block_t* blockify_instructions(char** instructions, size_t* skip, condition_type
 		block_t* b = NULL;
         
         char* line = str_trim(instructions[i]);
-        // printf("AT I (%zu), skp: (%zu) LINE: '%s'\n", i, *skip, line);
+        
+        if (dbg_value_of("show_lines_on_blockify"))
+            printf("AT I (%zu), skp: (%zu) LINE: '%s'\n", i, *skip, line);
 
         
 		// blocks; either IF, CALL or LOOP
@@ -72,12 +74,12 @@ block_t* blockify_instructions(char** instructions, size_t* skip, condition_type
 		{
             condition_type_t c = line[0] == '?' ? IF : line[0] == '@' ? CALL : LOOP;
             
+            size_t nested_skip = 0;
 			// recursively find nested blocks
-			b = blockify_instructions(&instructions[i], skip, c);
+			b = blockify_instructions(&instructions[i], &nested_skip, c);
             
 			// skip in instructions
-			i += *skip;
-            *skip = 0;
+			i += nested_skip;
 
 		}
 		// end block
@@ -88,7 +90,7 @@ block_t* blockify_instructions(char** instructions, size_t* skip, condition_type
 			
 			// increase skip
             // TODO: CHECK MAYBE +=?
-			*skip += count;
+            *skip = i;
 
             char stripped_cond[32];
             strcpy(stripped_cond, condition);

@@ -14,6 +14,10 @@
 #define f32 float           // %f
 #define i32 int32_t
 
+#define I16_MAX 0x7FFF
+#define I24_MAX 0x7FFFFF
+#define I32_MAX 0x7FFFFFFF
+
 /* 
  * chunk printing logic:
  * DONT_PRINT = doesn't print the data block at all
